@@ -23,7 +23,7 @@ func main() {
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
 
-	e.GET("/pong", func(c echo.Context) error {
+	e.GET("/pong-2", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
 
