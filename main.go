@@ -23,7 +23,7 @@ func main() {
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
 
-	e.POST("/webhook-mzo", func(c echo.Context) error {
+	e.POST("/webhook-mzo-2", func(c echo.Context) error {
 		e.Logger.Print("hello webhook updated")
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
