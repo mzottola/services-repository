@@ -1,4 +1,4 @@
-FROM 880317640327.dkr.ecr.eu-west-3.amazonaws.com/mzo/nginx:1.14.2
+FROM 880317640327.dkr.ecr.eu-west-3.amazonaws.com/mzo/1.0
 
 # Set destination for COPY
 WORKDIR /app
