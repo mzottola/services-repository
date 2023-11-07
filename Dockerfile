@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine
+FROM https://880317640327.dkr.ecr.eu-west-3.amazonaws.com/nginx:1.14.2
 
 # Set destination for COPY
 WORKDIR /app
