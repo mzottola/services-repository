@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -10,28 +12,39 @@ import (
 
 func main() {
 
-	e := echo.New()
+	var createEcho = func() *echo.Echo {
+		e := echo.New()
+		e.Use(middleware.Logger())
+		e.Use(middleware.Recover())
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+		e.GET("/health", func(c echo.Context) error {
+			e.Logger.Print("health-check")
+			return c.HTML(http.StatusOK, "Hello, go-simple-app ")
+		})
 
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
-	})
+		e.GET("/internal", func(c echo.Context) error {
+			var privateServiceUrl = os.Getenv("PRIVATE_SERVICE_URL")
+			e.Logger.Print(fmt.Sprintf("Calling internal service at %s", privateServiceUrl))
+			resp, err := http.Get(fmt.Sprintf("https://%s", privateServiceUrl))
+			if err != nil {
+				e.Logger.Error(fmt.Sprintf("Issue: %s", err))
+			}
+			defer resp.Body.Close()
+			body, err := io.ReadAll(resp.Body)
+			e.Logger.Print("Body: ")
+			e.Logger.Print(fmt.Sprintf("%s", body))
+			e.Logger.Print("internal service called")
+			return c.HTML(http.StatusOK, "internal-service-called")
+		})
 
-	e.GET("/ping", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	e.POST("/webhook-mzo-3", func(c echo.Context) error {
-		e.Logger.Print("hello webhook updated")
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	httpPort := os.Getenv("HTTP_PORT")
-	if httpPort == "" {
-		httpPort = "8080"
+		return e
 	}
 
-	e.Logger.Fatal(e.Start(":" + httpPort))
+	go func() {
+		var e = createEcho()
+		e.Logger.Fatal(e.Start(":" + "3000"))
+	}()
+
+	var e = createEcho()
+	e.Logger.Fatal(e.Start(":" + "3001"))
 }
