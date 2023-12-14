@@ -16,15 +16,17 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", func(c echo.Context) error {
+		e.Logger.Print("hello main page")
 		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
 	})
 
 	e.GET("/ping", func(c echo.Context) error {
+		e.Logger.Print("hello ping")
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
 
 	e.POST("/webhook-mzo-3", func(c echo.Context) error {
-		e.Logger.Print("hello webhook updated")
+		e.Logger.Print("hello webhookmzo3")
 		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
 	})
 
