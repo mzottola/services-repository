@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo "Hello job"
-echo "$MZO_VAR_JOB_1"
+echo "$ENV_VAR_1"
