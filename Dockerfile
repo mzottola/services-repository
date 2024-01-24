@@ -7,7 +7,7 @@ COPY [ "package.json", "package-lock.json" ]
 RUN npm install prisma --save-dev
 
 FROM base AS prod
-EXPOSE 80
+EXPOSE 3000
 ENV NODE_ENV=production
 COPY --from=base /app ./
 RUN npm install -g @nestjs/cli
