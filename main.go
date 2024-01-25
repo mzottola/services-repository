@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io"
+	"net"
 	"net/http"
 	"os"
 
@@ -25,15 +25,50 @@ func main() {
 		e.GET("/internal", func(c echo.Context) error {
 			var privateServiceUrl = os.Getenv("PRIVATE_SERVICE_URL")
 			e.Logger.Print(fmt.Sprintf("Calling internal service at %s on port 4200", privateServiceUrl))
-			resp, err := http.Get(fmt.Sprintf("https://%s:4200", privateServiceUrl))
+			//resp, err := http.Get(tcpAddress)
+			//if err != nil {
+			//	e.Logger.Error(fmt.Sprintf("Issue: %s", err))
+			//}
+			//defer resp.Body.Close()
+			//body, err := io.ReadAll(resp.Body)
+			//e.Logger.Print("Body: ")
+			//e.Logger.Print(fmt.Sprintf("%s", body))
+			//e.Logger.Print("internal service called")
+			//return c.HTML(http.StatusOK, "internal-service-called")
+
+			strEcho := "Halo"
+			servAddr := fmt.Sprintf("%s:4200", privateServiceUrl)
+			tcpAddr, err := net.ResolveTCPAddr("tcp", servAddr)
 			if err != nil {
-				e.Logger.Error(fmt.Sprintf("Issue: %s", err))
+				println("ResolveTCPAddr failed:", err.Error())
+				os.Exit(1)
 			}
-			defer resp.Body.Close()
-			body, err := io.ReadAll(resp.Body)
-			e.Logger.Print("Body: ")
-			e.Logger.Print(fmt.Sprintf("%s", body))
-			e.Logger.Print("internal service called")
+
+			conn, err := net.DialTCP("tcp", nil, tcpAddr)
+			if err != nil {
+				println("Dial failed:", err.Error())
+				os.Exit(1)
+			}
+
+			_, err = conn.Write([]byte(strEcho))
+			if err != nil {
+				println("Write to server failed:", err.Error())
+				os.Exit(1)
+			}
+
+			println("write to server = ", strEcho)
+
+			reply := make([]byte, 1024)
+
+			_, err = conn.Read(reply)
+			if err != nil {
+				println("Write to server failed:", err.Error())
+				os.Exit(1)
+			}
+
+			println("reply from server=", string(reply))
+
+			conn.Close()
 			return c.HTML(http.StatusOK, "internal-service-called")
 		})
 
