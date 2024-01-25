@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"net/http"
-	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,24 +14,14 @@ func main() {
 		e.Use(middleware.Logger())
 		e.Use(middleware.Recover())
 
-		e.GET("/health", func(c echo.Context) error {
-			e.Logger.Print("health-check")
-			return c.HTML(http.StatusOK, "Hello, go-simple-app ")
+		e.GET("/", func(c echo.Context) error {
+			e.Logger.Print("hello from internal service")
+			return c.HTML(http.StatusOK, "Hello")
 		})
 
-		e.GET("/internal", func(c echo.Context) error {
-			var privateServiceUrl = os.Getenv("PRIVATE_SERVICE_URL")
-			e.Logger.Print(fmt.Sprintf("Calling internal service at %s", privateServiceUrl))
-			resp, err := http.Get(fmt.Sprintf("https://%s", privateServiceUrl))
-			if err != nil {
-				e.Logger.Error(fmt.Sprintf("Issue: %s", err))
-			}
-			defer resp.Body.Close()
-			body, err := io.ReadAll(resp.Body)
-			e.Logger.Print("Body: ")
-			e.Logger.Print(fmt.Sprintf("%s", body))
-			e.Logger.Print("internal service called")
-			return c.HTML(http.StatusOK, "internal-service-called")
+		e.GET("/health", func(c echo.Context) error {
+			e.Logger.Print("health")
+			return c.HTML(http.StatusOK, "health-internal-service")
 		})
 
 		return e
@@ -42,9 +29,9 @@ func main() {
 
 	go func() {
 		var e = createEcho()
-		e.Logger.Fatal(e.Start(":" + "3000"))
+		e.Logger.Fatal(e.Start(":" + "4200"))
 	}()
 
 	var e = createEcho()
-	e.Logger.Fatal(e.Start(":" + "3001"))
+	e.Logger.Fatal(e.Start(":" + "3000"))
 }
