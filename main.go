@@ -24,7 +24,7 @@ func main() {
 
 		e.GET("/internal", func(c echo.Context) error {
 			var privateServiceUrl = os.Getenv("PRIVATE_SERVICE_URL")
-			e.Logger.Print(fmt.Sprintf("Calling internal service at %s", privateServiceUrl))
+			e.Logger.Print(fmt.Sprintf("Calling internal service at %s on port 4200", privateServiceUrl))
 			resp, err := http.Get(fmt.Sprintf("https://%s:4200", privateServiceUrl))
 			if err != nil {
 				e.Logger.Error(fmt.Sprintf("Issue: %s", err))
