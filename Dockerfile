@@ -3,9 +3,14 @@ FROM golang:1.16-alpine
 # Set destination for COPY
 WORKDIR /app
 
+ARG MZO_FILE_ENV_VARIABLE
+RUN echo "$MZO_FILE_ENV_VARIABLE"
+ENV MZO_FILE_ENV_VARIABLE $MZO_FILE_ENV_VARIABLE
+
 # Download Go modules
 COPY go.mod .
 COPY go.sum .
+COPY ${MZO_FILE_ENV_VARIABLE} ./file.yaml
 RUN go mod download
 
 # Copy the source code. Note the slash at the end, as explained in

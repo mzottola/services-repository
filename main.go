@@ -35,5 +35,8 @@ func main() {
 		httpPort = "8080"
 	}
 
+	filevariable := os.Getenv("MZO_FILE_ENV_VARIABLE")
+        e.Logger.Print(filevariable)
+
 	e.Logger.Fatal(e.Start(":" + httpPort))
 }
