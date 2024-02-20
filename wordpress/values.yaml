@@ -1,0 +1,17 @@
+wordpressUsername: admin
+wordpressEmail: user@example.com
+wordpressFirstName: John
+wordpressLastName: Smith
+wordpressBlogName: Awesomic Marketing Frontend
+wordpressScheme: https
+livenessProbe:
+  httpGet:
+    port: https
+    scheme: HTTPS
+readinessProbe:
+  httpGet:
+    port: https
+    scheme: HTTPS
+service:
+  type: ClusterIP
+

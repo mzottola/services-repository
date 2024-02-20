@@ -1,0 +1,11 @@
+apiVersion: v2
+name: mzo-wordpress
+description: Test Wordpress helm
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+dependencies:
+- name: wordpress
+  version: 19.3.0
+  repository: https://charts.bitnami.com/bitnami
