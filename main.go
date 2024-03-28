@@ -35,5 +35,20 @@ func main() {
 		httpPort = "8080"
 	}
 
+	go func() {
+          ee := echo.New()
+
+	  ee.Use(middleware.Logger())
+	  ee.Use(middleware.Recover())
+
+	  ee.GET("/", func(c echo.Context) error {
+		ee.Logger.Print("health")
+		return c.HTML(http.StatusOK, "health OK")
+	  })
+
+          ee.Logger.Print("Server started on: http://localhost:3000")
+	  ee.Logger.Fatal(ee.Start(":3000"))
+        }()
+
 	e.Logger.Fatal(e.Start(":" + httpPort))
 }
