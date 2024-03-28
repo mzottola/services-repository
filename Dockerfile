@@ -15,6 +15,10 @@ COPY *.go ./
 # Build
 RUN go build -o /docker-gs-ping
 
+RUN apk update
+RUN apk upgrade
+RUN apk add curl
+
 # This is for documentation purposes only.
 # To actually open the port, runtime parameters
 # must be supplied to the docker command.
