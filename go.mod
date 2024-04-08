@@ -14,8 +14,9 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/opencontainers/runc v1.0.0-rc93 // indirect
 	github.com/ory/dockertest/v3 v3.6.5 // indirect
+	github.com/qovery/qovery-client-go v0.0.0-20240403130832-8ff623dde16f // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/net v0.0.0-20210502030024-e5908800b52b // indirect
 	golang.org/x/sys v0.0.0-20210502180810-71e4cd670f79 // indirect

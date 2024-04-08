@@ -1,54 +1,37 @@
 package main
 
 import (
-	"net/http"
-	"os"
+	"context"
+	"fmt"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/qovery/qovery-client-go"
 )
 
+/*
+// output
+qovery service list
+Name     | Type        | Status
+httpgo   | Application | STOPPED
+nginx    | Container   | STOPPED
+twingate | Helm        | STOPPED
+*/
+
 func main() {
+	// setup Qovery API Client
+	cfg := qovery.NewConfiguration()
 
-	e := echo.New()
+	cfg.AddDefaultHeader("content-type", "application/json")
+	apiClient := qovery.NewAPIClient(cfg)
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET("/", func(c echo.Context) error {
-		e.Logger.Print("hello main page")
-		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
-	})
-
-	e.GET("/ping", func(c echo.Context) error {
-		e.Logger.Print("hello ping")
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	e.POST("/webhook-mzo-3", func(c echo.Context) error {
-		e.Logger.Print("hello webhookmzo3")
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	httpPort := os.Getenv("HTTP_PORT")
-	if httpPort == "" {
-		httpPort = "8080"
+	// get information from project
+	projectId := "018e3b90-744e-4174-adfb-3e1db59dce76"
+	result, _, err := apiClient.EnvironmentsAPI.ListEnvironment(context.Background(), projectId).Execute()
+	if err != nil {
+		return
 	}
 
-	go func() {
-          ee := echo.New()
+	for _, environment := range result.Results {
+		fmt.Printf("%s", environment.Name)
+	}
 
-	  ee.Use(middleware.Logger())
-	  ee.Use(middleware.Recover())
-
-	  ee.GET("/health", func(c echo.Context) error {
-		ee.Logger.Print("health")
-		return c.HTML(http.StatusOK, "health OK")
-	  })
-
-          ee.Logger.Print("Server started on: http://localhost:3000")
-	  ee.Logger.Fatal(ee.Start(":3000"))
-        }()
-
-	e.Logger.Fatal(e.Start(":" + httpPort))
 }
