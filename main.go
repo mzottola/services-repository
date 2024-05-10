@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	e := echo.New()
+	e := echo.Ne()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
