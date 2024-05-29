@@ -16,7 +16,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", func(c echo.Context) error {
-		e.Logger.Print("hello main page push")
+		e.Logger.Print("hello main page ")
 		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
 	})
 
