@@ -1,3 +1,3 @@
 FROM busybox:1.34.1
 
-CMD echo "Hello job new";sleep 13; echo "End job plop trigger 2";
+CMD echo "Hello job new";sleep 13; echo "End job plop trigger  new2";
