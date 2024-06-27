@@ -17,6 +17,13 @@ func main() {
 
 	e.GET("/", func(c echo.Context) error {
 		e.Logger.Print("hello main page ")
+		for key, values := range c.Request().Header {
+                    e.Logger.Print("Header: ", key)
+                    for _, value := range values {
+                        e.Logger.Print("  Value: ", value)
+                    }
+                }
+
 		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
 	})
 
