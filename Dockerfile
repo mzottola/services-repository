@@ -12,5 +12,5 @@ EOF
 RUN go build -o /bin/hello ./main.go
 
 FROM scratch
-COPY --from=build /bin/hello /bin/hello_new
-CMD ["/bin/hello_new"]
+COPY --from=build /bin/hello /bin/hello_new2
+CMD ["/bin/hello_new2"]
