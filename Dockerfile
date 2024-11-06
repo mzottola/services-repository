@@ -32,4 +32,4 @@ EXPOSE 3000
 #ENV HTTP_PORT=8081
 
 # Run
-CMD [ "/docker-gs-ping" ]
+#CMD [ "/docker-gs-ping" ]
