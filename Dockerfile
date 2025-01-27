@@ -1,35 +1,11 @@
-FROM golang:1.16-alpine
+FROM debian:bookworm
 
-# Set destination for COPY
-WORKDIR /app
+RUN apt-get update && \
+	apt-get -y upgrade && \
+	apt -y install curl && \
+	apt-get clean
 
-# Download Go modules
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
+COPY script.sh script.sh
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/engine/reference/builder/#copy
-COPY *.go ./
+CMD ["./script.sh"]
 
-# Build
-RUN go build -o /docker-gs-ping
-
-RUN apk update
-RUN apk upgrade
-RUN apk add curl
-
-# This is for documentation purposes only.
-# To actually open the port, runtime parameters
-# must be supplied to the docker command.
-EXPOSE 8080
-EXPOSE 3000
-
-# (Optional) environment variable that our dockerised
-# application can make use of. The value of environment
-# variables can also be set via parameters supplied
-# to the docker command on the command line.
-#ENV HTTP_PORT=8081
-
-# Run
-CMD [ "/docker-gs-ping" ]
