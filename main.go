@@ -49,7 +49,7 @@ func main() {
 	  ee.Use(middleware.Recover())
 
 	  ee.GET("/health", func(c echo.Context) error {
-		ee.Logger.Print("health")
+		ee.Logger.Print("health hook")
 		return c.HTML(http.StatusOK, "health OK")
 	  })
 
