@@ -16,7 +16,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.GET("/", func(c echo.Context) error {
-		e.Logger.Print("hello main page webhook")
+		e.Logger.Print("hello main page webhook trigger")
 		for key, values := range c.Request().Header {
                     e.Logger.Print("Header: ", key)
                     for _, value := range values {
