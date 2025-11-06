@@ -4,7 +4,7 @@ echo "Starting app..."
 
 while true
 do 
-   echo "iterating ..."
+   echo "iterating 2..."
    sleep 60 
 done
 
