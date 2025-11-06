@@ -3,6 +3,7 @@
 echo "Starting app..."
 echo "Starting app..."
 echo "Starting app..."
+echo "Starting app..."
 
 while true
 do 
