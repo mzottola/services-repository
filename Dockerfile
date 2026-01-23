@@ -1,30 +1,22 @@
-# Use Ubuntu 22.04 as base image (stable and widely used)
-FROM ubuntu:22.04
+# Use nginx alpine as base image for lightweight container
+FROM nginx:1.25-alpine
 
-# Avoid prompts from apt
-ENV DEBIAN_FRONTEND=noninteractive
+# Remove default nginx static assets
+RUN rm -rf /usr/share/nginx/html/*
 
-# Update system packages and install required dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    unzip \
-    curl \
-    less \
-    groff \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Copy the HTML application to nginx html directory
+COPY secret-importer.html /usr/share/nginx/html/index.html
 
-# Install AWS CLI v2
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm -rf awscliv2.zip aws
+# Copy custom nginx configuration (optional, using default nginx config)
+# If you need custom nginx config, uncomment and create nginx.conf:
+# COPY nginx.conf /etc/nginx/nginx.conf
 
-# Verify AWS CLI installation
-RUN aws --version
+# Expose port 80
+EXPOSE 80
 
-# Set working directory
-WORKDIR /root
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:80/ || exit 1
 
-# Keep container running for testing purposes
-CMD ["tail", "-f", "/dev/null"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
