@@ -1,0 +1,95 @@
+/* Base styles - Reset, typography, variables */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #f7fafc;
+    min-height: 100vh;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}
+
+.empty-state-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+.empty-state-content {
+    text-align: center;
+    max-width: 500px;
+}
+
+.empty-state-content svg {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+    opacity: 0.3;
+}
+
+.empty-state-content h2 {
+    font-size: 28px;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.empty-state-content p {
+    font-size: 16px;
+    color: #718096;
+    line-height: 1.6;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+}
+
+.empty-state svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #718096;
+}
+
+.empty-state p {
+    font-size: 14px;
+}
+
+.validation-error {
+    color: #e53e3e;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.duplicate-error {
+    color: #e53e3e;
+    font-size: 11px;
+    margin-top: 4px;
+    display: none;
+}
+
+.duplicate-error.show {
+    display: block;
+}

@@ -1,0 +1,258 @@
+/* Cluster layout and tree view styles */
+
+.cluster-layout {
+    display: flex;
+    gap: 24px;
+}
+
+.cluster-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.cluster-list {
+    background: #f7fafc;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.cluster-list-title {
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4a5568;
+    background: #edf2f7;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cluster-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.cluster-item:last-child {
+    border-bottom: none;
+}
+
+.cluster-item:hover {
+    background: #edf2f7;
+    color: #2d3748;
+}
+
+.cluster-item.active {
+    background: #667eea;
+    color: white;
+}
+
+.cluster-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+.cluster-item span:first-of-type {
+    flex: 1;
+}
+
+.cluster-sm-count {
+    font-size: 11px;
+    background: #e2e8f0;
+    color: #4a5568;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.cluster-item.active .cluster-sm-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.cluster-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.cluster-content-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.cluster-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cluster-header h3 {
+    font-size: 18px;
+    color: #2d3748;
+    margin: 0;
+}
+
+.cluster-body {
+    padding: 24px;
+}
+
+.no-clusters-selected {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+}
+
+.no-clusters-selected svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.no-clusters-selected p {
+    font-size: 14px;
+}
+
+/* Tree View Styles */
+.secrets-tree {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 14px;
+}
+
+.tree-node {
+    margin: 4px 0;
+}
+
+.tree-node-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tree-node-header:hover {
+    background: #f0f4ff;
+}
+
+.tree-node-header.expanded {
+    background: #f7fafc;
+}
+
+.tree-toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #667eea;
+    transition: transform 0.2s;
+}
+
+.tree-toggle.expanded {
+    transform: rotate(90deg);
+}
+
+.tree-toggle.hidden {
+    visibility: hidden;
+}
+
+.tree-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tree-icon.json {
+    color: #667eea;
+}
+
+.tree-icon.string {
+    color: #38a169;
+}
+
+.tree-icon.key {
+    color: #d69e2e;
+}
+
+.tree-label {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.tree-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.tree-badge.json {
+    background: #e9d8fd;
+    color: #6b46c1;
+}
+
+.tree-badge.string {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.tree-children {
+    margin-left: 28px;
+    padding-left: 20px;
+    border-left: 2px solid #e2e8f0;
+    display: none;
+}
+
+.tree-children.expanded {
+    display: block;
+}
+
+.tree-leaf {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+.tree-leaf:hover {
+    background: #fffaf0;
+}
+
+.tree-key-name {
+    color: #744210;
+    font-weight: 500;
+}
+
+.tree-value {
+    color: #718096;
+    font-style: italic;
+    font-size: 13px;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tree-empty {
+    color: #a0aec0;
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}

@@ -1,0 +1,336 @@
+/* Authentication entry and card styles */
+
+.auth-entries-container {
+    margin-top: 16px;
+}
+
+.auth-entry {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: #f9fafb;
+    position: relative;
+}
+
+.auth-entry:hover {
+    border-color: #cbd5e0;
+}
+
+.auth-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.auth-entry-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-entry-delete {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.auth-entry-delete:hover {
+    background: #fed7d7;
+    color: #e53e3e;
+}
+
+.auth-entry-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.auth-entry-row:last-child {
+    margin-bottom: 0;
+}
+
+.auth-entry-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-entry-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.auth-entry-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 4px;
+}
+
+.auth-entry-field input,
+.auth-entry-field select,
+.auth-entry-field textarea {
+    padding: 8px 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.auth-entry-field textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+}
+
+.auth-entry-field input:focus,
+.auth-entry-field select:focus,
+.auth-entry-field textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.add-auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    background: white;
+    color: #667eea;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-auth-btn:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.add-auth-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.auth-type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.auth-type-badge.aws-sm {
+    background: #fed7aa;
+    color: #c05621;
+}
+
+.auth-type-badge.aws-ps {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.auth-type-badge.gcp {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.auth-type-badge.auto {
+    border: 1px dashed currentColor;
+    opacity: 0.8;
+}
+
+.no-auth-message {
+    text-align: center;
+    padding: 24px;
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+.auth-warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #92400e;
+    display: none;
+}
+
+.auth-warning.show {
+    display: block;
+}
+
+/* Secret Manager Cards */
+.sm-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sm-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sm-card-header {
+    background: #f7fafc;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sm-card-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #2d3748;
+}
+
+.sm-card-body {
+    padding: 16px 20px;
+}
+
+.auth-card {
+    background: #f9fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+.auth-card:last-child {
+    margin-bottom: 0;
+}
+
+.auth-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.auth-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.auth-card-type {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.auth-card-mode {
+    font-size: 12px;
+    color: #718096;
+}
+
+.auth-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.auth-card-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid #cbd5e0;
+    background: white;
+    color: #4a5568;
+    transition: all 0.2s;
+}
+
+.auth-card-btn:hover {
+    background: #f7fafc;
+    border-color: #a0aec0;
+}
+
+.auth-card-btn.show-secrets {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.auth-card-btn.show-secrets:hover {
+    background: #5a67d8;
+}
+
+.auth-card-btn.delete {
+    color: #e53e3e;
+    border-color: #feb2b2;
+}
+
+.auth-card-btn.delete:hover {
+    background: #fff5f5;
+    border-color: #fc8181;
+}
+
+.configure-sm-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+}
+
+.configure-sm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.configure-sm-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.no-sm-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #a0aec0;
+}
+
+.no-sm-message svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.no-sm-message p {
+    font-size: 14px;
+}

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Secrets from Secrets Manager</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="css/cluster.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>🔐 Secrets Hub</h1>
+            <p>Manage your application secrets</p>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="showView('manage-secret-managers')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Manage Secret Managers
+            </div>
+            <!-- Hidden: Link to Clusters moved into Manage Secret Managers -->
+            <!--
+            <div class="menu-item" onclick="showView('link-clusters')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+                Link to Clusters
+            </div>
+            -->
+            <div class="menu-item" onclick="showView('import-secrets')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                Import Secrets
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+        <div class="main-content">
+            <!-- Empty State (shown by default) -->
+            <div id="empty-state" class="view-section active">
+                <div class="empty-state-container">
+                    <div class="empty-state-content">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <h2>Welcome to Secrets Manager</h2>
+                        <p>Select an option from the left menu to get started with managing your application secrets.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Secrets View -->
+            <div id="import-secrets-view" class="view-section">
+                <div class="content-card">
+                    <div class="header">
+                        <h1>🔐 Import Secrets from Secrets Manager</h1>
+                        <p>Configure how your secrets are imported into your application</p>
+                    </div>
+
+                    <div class="content">
+                        <div class="info-banner">
+                            <strong>ℹ️ How it works:</strong> Map your secrets from AWS Secrets Manager to environment variables or files in your application. We only store references to your secrets, not the actual values.
+                        </div>
+
+                        <button class="bulk-import-btn" onclick="openBulkImportModal()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            Import many key-values from one secret
+                        </button>
+
+                        <button class="bulk-import-btn" onclick="openBulkStringImportModal()" style="margin-left: 12px;">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                            </svg>
+                            Import many raw-text secrets
+                        </button>
+
+                        <div class="table-container" id="tableContainer">
+                            <table id="secretsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Secrets Manager</th>
+                                        <th>Secret Name</th>
+                                        <th>Import Type</th>
+                                        <th>JSON Key</th>
+                                        <th>Target Key</th>
+                                        <th>File Path</th>
+                                        <th>Scope</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Rows will be added dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button class="add-row-btn" onclick="addRow()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Add Secret Import
+                        </button>
+
+                        <div class="actions">
+                            <button class="cancel-btn" onclick="cancel()">Cancel</button>
+                            <button class="save-btn" onclick="save()">Save Configuration</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Secret Managers View -->
+            <div id="manage-secret-managers-view" class="view-section">
+                <div class="content-card">
+                    <div class="header">
+                        <h1>⚙️ Manage Secret Managers</h1>
+                        <p>Configure your secret manager connections per cluster</p>
+                    </div>
+
+                    <div class="content">
+                        <div class="info-banner">
+                            <strong>ℹ️ About Secret Managers:</strong> Connect your AWS Secrets Manager, AWS Parameter Store, or GCP Secret Manager to securely access your secrets. Select a cluster to configure its secret managers.
+                        </div>
+
+                        <div class="cluster-layout">
+                            <div class="cluster-sidebar">
+                                <div class="cluster-list">
+                                    <div class="cluster-list-title">Clusters</div>
+                                    <div id="smClusterList">
+                                        <!-- Clusters will be rendered here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cluster-main">
+                                <div id="smClusterContent">
+                                    <div class="no-clusters-selected">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <p>Select a cluster from the left to manage its Secret Managers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link Secrets Managers to Cluster View -->
+            <div id="link-clusters-view" class="view-section">
+                <div class="content-card">
+                    <div class="header">
+                        <h1>🔗 Link Secrets Managers to Clusters</h1>
+                        <p>Associate secret managers with your clusters and configure refresh intervals</p>
+                    </div>
+
+                    <div class="content">
+                        <div class="info-banner">
+                            <strong>ℹ️ About Clusters:</strong> Link secret managers to clusters to enable automatic secret synchronization. The refresh interval determines how often secrets are refreshed from the source.
+                        </div>
+
+                        <div class="cluster-layout">
+                            <div class="cluster-sidebar">
+                                <div class="cluster-list">
+                                    <div class="cluster-list-title">Clusters</div>
+                                    <div id="clusterList">
+                                        <!-- Clusters will be rendered here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cluster-main">
+                                <div id="clusterContent">
+                                    <div class="no-clusters-selected">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <p>Select a cluster from the left to manage its linked Secret Managers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="modal-overlay" id="secretManagerModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="secretManagerModalTitle">Add Authentication</h2>
+                <button class="modal-close" onclick="closeSecretManagerModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section" id="smNameSection" style="display: none;">
+                    <label>Secret Manager Name</label>
+                    <input type="text" id="smName" placeholder="e.g., Production Secrets">
+                </div>
+                <div class="modal-section">
+                    <label>Authentication Configuration</label>
+                    <p style="font-size: 13px; color: #718096; margin-bottom: 12px;">
+                        Configure the authentication method for accessing secrets from a cloud provider.
+                    </p>
+                    <div class="auth-warning" id="authWarning">
+                        "Automatically Generated" uses the cluster's cloud account. You cannot mix AWS and GCP with automatic authentication.
+                    </div>
+                    <div class="auth-entries-container" id="authEntriesContainer">
+                        <!-- Auth entries will be added dynamically -->
+                    </div>
+                    <button type="button" class="add-auth-btn" onclick="addAuthEntry()" id="addAuthEntryBtn" style="display: none;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add Another Authentication
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSecretManagerModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="smConfirmBtn" onclick="saveSecretManager()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Import Modal -->
+    <div class="modal-overlay" id="bulkImportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🚀 Bulk Import Keys from Secret</h2>
+                <button class="modal-close" onclick="closeBulkImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <label>Secrets Manager</label>
+                    <select id="bulkSecretsManager" onchange="handleBulkSecretsManagerChange()">
+                        <option value="">Select Secrets Manager</option>
+                    </select>
+                </div>
+                <div class="modal-section">
+                    <label>Secret Name</label>
+                    <select id="bulkSecretName" onchange="handleBulkSecretChange()" disabled>
+                        <option value="">Select Secret</option>
+                    </select>
+                </div>
+                <div id="bulkKeysContainer" style="display: none;">
+                    <div class="modal-section">
+                        <label>Select Keys to Import</label>
+                        <div class="bulk-table-container">
+                            <div class="select-all-container">
+                                <input type="checkbox" id="selectAllKeys" checked onchange="toggleAllKeys()">
+                                <label for="selectAllKeys">Select / Deselect All</label>
+                            </div>
+                            <table class="bulk-table">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-cell">Import</th>
+                                        <th>Key</th>
+                                        <th>Target Key (ENV_VAR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bulkKeysTableBody">
+                                    <!-- Keys will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeBulkImportModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="bulkConfirmBtn" onclick="confirmBulkImport()" disabled>Confirm Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secrets Tree Modal -->
+    <div class="modal-overlay" id="secretsTreeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="secretsTreeModalTitle">Secrets</h2>
+                <button class="modal-close" onclick="closeSecretsTreeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="secretsTreeContainer" class="secrets-tree">
+                    <!-- Tree will be rendered here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSecretsTreeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Secret Manager Modal -->
+    <div class="modal-overlay" id="linkSmModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Link Secret Manager</h2>
+                <button class="modal-close" onclick="closeLinkSmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <label>Secret Manager</label>
+                    <select id="linkSmSelect">
+                        <option value="">Select Secret Manager</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeLinkSmModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmLinkSm()">Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk String Import Modal -->
+    <div class="modal-overlay" id="bulkStringImportModal">
+        <div class="modal" style="max-width: 1100px;">
+            <div class="modal-header">
+                <h2>Import Many Raw-Text Secrets</h2>
+                <button class="modal-close" onclick="closeBulkStringImportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <label>Secrets Manager</label>
+                    <select id="bulkStringSecretsManager" onchange="handleBulkStringSecretsManagerChange()">
+                        <option value="">Select Secrets Manager</option>
+                    </select>
+                </div>
+                <div id="bulkStringSecretsContainer" style="display: none;">
+                    <div class="modal-section">
+                        <label>Select Secrets to Import</label>
+                        <div class="bulk-table-container">
+                            <div class="select-all-container">
+                                <input type="checkbox" id="selectAllStringSecrets" checked onchange="toggleAllStringSecrets()">
+                                <label for="selectAllStringSecrets">Select / Deselect All</label>
+                            </div>
+                            <table class="bulk-table">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-cell">Import</th>
+                                        <th>Secret Name</th>
+                                        <th>Import As</th>
+                                        <th>Target Key</th>
+                                        <th>File Path</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bulkStringSecretsTableBody">
+                                    <!-- Secrets will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" onclick="closeBulkStringImportModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="bulkStringConfirmBtn" onclick="confirmBulkStringImport()" disabled>Confirm Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files (order matters for dependencies) -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/views.js"></script>
+    <script src="js/cluster-manager.js"></script>
+    <script src="js/auth-manager.js"></script>
+    <script src="js/secrets-modal.js"></script>
+    <script src="js/import-secrets.js"></script>
+</body>
+</html>

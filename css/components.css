@@ -1,0 +1,373 @@
+/* Component styles - Buttons, forms, tables, badges */
+
+/* Form Elements */
+select, input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: white;
+}
+
+select:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+select:disabled, input[type="text"]:disabled {
+    background: #f7fafc;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+input[type="text"].duplicate {
+    border-color: #fc8181;
+    border-width: 2px;
+    background: #fff5f5;
+}
+
+/* Tables */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+thead {
+    background: #f7fafc;
+}
+
+th {
+    text-align: left;
+    padding: 16px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #4a5568;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Buttons */
+.delete-btn {
+    background: #fc8181;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.delete-btn:hover {
+    background: #f56565;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(252, 129, 129, 0.3);
+}
+
+.delete-btn:active {
+    transform: translateY(0);
+}
+
+.add-row-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-row-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+}
+
+.add-row-btn:active {
+    transform: translateY(0);
+}
+
+.add-row-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+.cancel-btn {
+    background: white;
+    color: #4a5568;
+    border: 1px solid #cbd5e0;
+    padding: 14px 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+    background: #f7fafc;
+    border-color: #a0aec0;
+}
+
+.bulk-import-btn {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.bulk-import-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+}
+
+.bulk-import-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Badges */
+.type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.type-badge.env {
+    background: #c3dafe;
+    color: #2c5282;
+}
+
+.type-badge.file {
+    background: #fef5e7;
+    color: #b7791f;
+}
+
+/* SM Actions */
+.sm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sm-actions .btn-sm {
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: none;
+    color: white;
+}
+
+.sm-actions .show-secrets-btn {
+    background: #48bb78;
+}
+
+.sm-actions .show-secrets-btn:hover {
+    background: #38a169;
+}
+
+.sm-actions .edit-sm-btn {
+    background: #667eea;
+}
+
+.sm-actions .edit-sm-btn:hover {
+    background: #5a67d8;
+}
+
+.sm-actions .delete-sm-btn {
+    background: #fc8181;
+}
+
+.sm-actions .delete-sm-btn:hover {
+    background: #f56565;
+}
+
+.link-sm-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.link-sm-btn:hover {
+    background: #5a67d8;
+}
+
+.link-sm-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.unlink-btn {
+    background: #fc8181;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.unlink-btn:hover {
+    background: #f56565;
+}
+
+/* Linked SM Table */
+.linked-sm-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: auto;
+}
+
+.linked-sm-table th {
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 12px;
+    color: #4a5568;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #f7fafc;
+}
+
+.linked-sm-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+.linked-sm-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.linked-sm-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Checkbox */
+.checkbox-cell {
+    width: 50px;
+    text-align: center;
+}
+
+.checkbox-cell input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.key-label {
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.select-all-container {
+    padding: 12px 16px;
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.select-all-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.select-all-container label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+}
