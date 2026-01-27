@@ -4,8 +4,10 @@ FROM nginx:1.25-alpine
 # Remove default nginx static assets
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy the HTML application to nginx html directory
-COPY secret-importer.html /usr/share/nginx/html/index.html
+# Copy the application files to nginx html directory
+COPY index.html /usr/share/nginx/html/
+COPY css/ /usr/share/nginx/html/css/
+COPY js/ /usr/share/nginx/html/js/
 
 # Copy custom nginx configuration (optional, using default nginx config)
 # If you need custom nginx config, uncomment and create nginx.conf:
