@@ -91,3 +91,52 @@ function generateTargetKeyFromSecretName(secretName) {
     const lastPart = parts[parts.length - 1];
     return lastPart.toUpperCase().replace(/-/g, '_');
 }
+
+// Get all authentications from the Staging cluster (for import secrets view)
+function getStagingAuthentications() {
+    const stagingCluster = clusters.find(c => c.id === 'cluster-staging');
+    if (!stagingCluster || !stagingCluster.secretManager) {
+        return [];
+    }
+    return (stagingCluster.secretManager.authentications || []).map(auth => ({
+        ...auth,
+        clusterId: stagingCluster.id,
+        clusterName: stagingCluster.name
+    }));
+}
+
+// Get secrets for a specific authentication
+function getSecretsForAuth(authId) {
+    for (const cluster of clusters) {
+        if (cluster.secretManager && cluster.secretManager.authentications) {
+            const auth = cluster.secretManager.authentications.find(a => a.id === authId);
+            if (auth) {
+                return auth.secrets || [];
+            }
+        }
+    }
+    return [];
+}
+
+// Find authentication by ID
+function findAuthentication(authId) {
+    for (const cluster of clusters) {
+        if (cluster.secretManager && cluster.secretManager.authentications) {
+            const auth = cluster.secretManager.authentications.find(a => a.id === authId);
+            if (auth) {
+                return { auth, cluster };
+            }
+        }
+    }
+    return null;
+}
+
+// Get authentication display name
+function getAuthDisplayName(auth) {
+    const typeLabels = {
+        'aws-secrets-manager': 'AWS Secrets Manager',
+        'aws-parameter-store': 'AWS Parameter Store',
+        'gcp-secret-manager': 'GCP Secret Manager'
+    };
+    return typeLabels[auth.type] || auth.type;
+}

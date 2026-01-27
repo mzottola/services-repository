@@ -7,7 +7,7 @@ function validateTargetKeys() {
     const targetKeyMap = new Map();
 
     rows.forEach(row => {
-        const targetInput = row.cells[4].querySelector('input[type="text"]');
+        const targetInput = row.cells[3].querySelector('input[type="text"]');
         if (targetInput && !targetInput.disabled) {
             const value = targetInput.value.trim();
             if (value) {
@@ -20,8 +20,8 @@ function validateTargetKeys() {
     });
 
     rows.forEach(row => {
-        const targetInput = row.cells[4].querySelector('input[type="text"]');
-        const errorDiv = row.cells[4].querySelector('.duplicate-error');
+        const targetInput = row.cells[3].querySelector('input[type="text"]');
+        const errorDiv = row.cells[3].querySelector('.duplicate-error');
         if (targetInput && !targetInput.disabled) {
             targetInput.classList.remove('duplicate');
             if (errorDiv) {
@@ -49,7 +49,7 @@ function getImportedTargetKeys() {
     const rows = tbody.querySelectorAll('tr');
 
     rows.forEach(row => {
-        const targetInput = row.cells[4].querySelector('input');
+        const targetInput = row.cells[3].querySelector('input');
         if (targetInput && targetInput.value.trim()) {
             importedKeys.add(targetInput.value.trim());
         }
@@ -67,9 +67,9 @@ function addRow() {
     tr.id = rowId;
     tr.innerHTML = `
         <td>
-            <select onchange="handleSecretsManagerChange('${rowId}')">
-                <option value="">Select Secrets Manager</option>
-                ${getAllSecretManagers().map(sm => `<option value="${sm.id}">${sm.name} (${sm.clusterName})</option>`).join('')}
+            <select onchange="handleSecretsSourceChange('${rowId}')">
+                <option value="">Select Secrets Source</option>
+                ${getStagingAuthentications().map(auth => `<option value="${auth.id}">${getAuthDisplayName(auth)}</option>`).join('')}
             </select>
         </td>
         <td>
@@ -80,14 +80,8 @@ function addRow() {
         <td>
             <select disabled onchange="handleImportTypeChange('${rowId}')">
                 <option value="">Select Type</option>
-                <option value="string">String → ENV_VAR</option>
-                <option value="json-key">JSON Key → ENV_VAR</option>
-                <option value="json-file">JSON → File</option>
-            </select>
-        </td>
-        <td>
-            <select disabled>
-                <option value="">N/A</option>
+                <option value="env">Env var</option>
+                <option value="file">File</option>
             </select>
         </td>
         <td>
@@ -98,11 +92,7 @@ function addRow() {
             <input type="text" class="file-path-input" placeholder="e.g., /etc/secrets/config.json" disabled>
         </td>
         <td>
-            <select>
-                <option value="PROJECT">PROJECT</option>
-                <option value="ENVIRONMENT">ENVIRONMENT</option>
-                <option value="SERVICE" selected>SERVICE</option>
-            </select>
+            <span class="scope-label">SERVICE</span>
         </td>
         <td>
             <button class="delete-btn" onclick="deleteRow('${rowId}')">Delete</button>
@@ -113,38 +103,33 @@ function addRow() {
     importConfigs.push({ rowId, config: {} });
 }
 
-function handleSecretsManagerChange(rowId) {
+function handleSecretsSourceChange(rowId) {
     const row = document.getElementById(rowId);
-    const smSelect = row.cells[0].querySelector('select');
+    const authSelect = row.cells[0].querySelector('select');
     const secretSelect = row.cells[1].querySelector('select');
     const typeSelect = row.cells[2].querySelector('select');
-    const keySelect = row.cells[3].querySelector('select');
-    const targetInput = row.cells[4].querySelector('input');
-    const filePathInput = row.cells[5].querySelector('.file-path-input');
+    const targetInput = row.cells[3].querySelector('input');
+    const filePathInput = row.cells[4].querySelector('.file-path-input');
 
-    const selectedSM = findSecretManager(smSelect.value)?.sm;
+    const authResult = findAuthentication(authSelect.value);
 
     const currentSecretName = secretSelect.value;
     const currentImportType = typeSelect.value;
-    const currentJsonKey = keySelect.value;
 
     secretSelect.innerHTML = '<option value="">Select Secret</option>';
     typeSelect.value = '';
     typeSelect.disabled = true;
-    keySelect.innerHTML = '<option value="">N/A</option>';
-    keySelect.disabled = true;
     targetInput.value = '';
     targetInput.disabled = true;
     filePathInput.value = '';
     filePathInput.disabled = true;
 
-    if (selectedSM) {
-        const allSecrets = getSecretsForSM(selectedSM);
+    if (authResult) {
+        const allSecrets = getSecretsForAuth(authResult.auth.id);
         allSecrets.forEach(secret => {
             const option = document.createElement('option');
             option.value = secret.name;
             option.textContent = secret.name;
-            option.dataset.keys = JSON.stringify(secret.keys);
             if (secret.name === currentSecretName) {
                 option.selected = true;
             }
@@ -157,83 +142,48 @@ function handleSecretsManagerChange(rowId) {
             if (currentImportType) {
                 typeSelect.value = currentImportType;
                 handleImportTypeChange(rowId);
-                if (currentJsonKey && keySelect.querySelector(`option[value="${currentJsonKey}"]`)) {
-                    keySelect.value = currentJsonKey;
-                }
             }
         }
     }
 
-    updateConfig(rowId, 'secretsManagerId', smSelect.value);
+    updateConfig(rowId, 'authenticationId', authSelect.value);
 }
 
 function handleSecretChange(rowId) {
     const row = document.getElementById(rowId);
     const secretSelect = row.cells[1].querySelector('select');
     const typeSelect = row.cells[2].querySelector('select');
-    const keySelect = row.cells[3].querySelector('select');
-    const targetInput = row.cells[4].querySelector('input');
-
-    const selectedOption = secretSelect.options[secretSelect.selectedIndex];
-    const keys = JSON.parse(selectedOption.dataset.keys || 'null');
+    const targetInput = row.cells[3].querySelector('input');
 
     typeSelect.innerHTML = '<option value="">Select Type</option>';
-    keySelect.innerHTML = '<option value="">N/A</option>';
-    keySelect.disabled = true;
+    typeSelect.innerHTML += '<option value="env">Env var</option>';
+    typeSelect.innerHTML += '<option value="file">File</option>';
+
     targetInput.value = '';
     targetInput.disabled = true;
-
-    typeSelect.innerHTML += '<option value="string">String → ENV_VAR</option>';
-
-    if (keys === null) {
-        // Simple string secret
-    } else {
-        typeSelect.innerHTML += '<option value="json-key">JSON Key → ENV_VAR</option>';
-        typeSelect.innerHTML += '<option value="json-file">JSON → File</option>';
-    }
 
     typeSelect.disabled = false;
     typeSelect.value = '';
 
     updateConfig(rowId, 'secretName', secretSelect.value);
-    updateConfig(rowId, 'availableKeys', keys);
 }
 
 function handleImportTypeChange(rowId) {
     const row = document.getElementById(rowId);
     const typeSelect = row.cells[2].querySelector('select');
-    const keySelect = row.cells[3].querySelector('select');
-    const targetInput = row.cells[4].querySelector('input[type="text"]:not(.file-path-input)');
-    const filePathInput = row.cells[5].querySelector('.file-path-input');
-    const secretSelect = row.cells[1].querySelector('select');
+    const targetInput = row.cells[3].querySelector('input[type="text"]:not(.file-path-input)');
+    const filePathInput = row.cells[4].querySelector('.file-path-input');
 
-    const selectedOption = secretSelect.options[secretSelect.selectedIndex];
-    const keys = JSON.parse(selectedOption.dataset.keys || 'null');
-
-    keySelect.disabled = true;
-    keySelect.innerHTML = '<option value="">N/A</option>';
     targetInput.disabled = false;
 
     const importType = typeSelect.value;
 
-    if (importType === 'json-key' && keys && keys.length > 0) {
-        keySelect.innerHTML = '<option value="">Select Key</option>';
-        keys.forEach(key => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = key;
-            keySelect.appendChild(option);
-        });
-        keySelect.disabled = false;
-        targetInput.placeholder = 'e.g., DATABASE_PASSWORD';
-        filePathInput.disabled = true;
-        filePathInput.value = '';
-    } else if (importType === 'string') {
+    if (importType === 'env') {
         targetInput.placeholder = 'e.g., DATABASE_URL';
         filePathInput.disabled = true;
         filePathInput.value = '';
-    } else if (importType === 'json-file') {
-        targetInput.placeholder = 'e.g., secrets';
+    } else if (importType === 'file') {
+        targetInput.placeholder = 'e.g., config_file';
         filePathInput.disabled = false;
     }
 
@@ -259,25 +209,22 @@ function updateConfig(rowId, field, value) {
 
 function collectRowData(rowId) {
     const row = document.getElementById(rowId);
-    const smSelect = row.cells[0].querySelector('select');
+    const authSelect = row.cells[0].querySelector('select');
     const secretSelect = row.cells[1].querySelector('select');
     const typeSelect = row.cells[2].querySelector('select');
-    const keySelect = row.cells[3].querySelector('select');
-    const targetInput = row.cells[4].querySelector('input[type="text"]:not(.file-path-input)');
-    const filePathInput = row.cells[5].querySelector('.file-path-input');
-    const scopeSelect = row.cells[6].querySelector('select');
+    const targetInput = row.cells[3].querySelector('input[type="text"]:not(.file-path-input)');
+    const filePathInput = row.cells[4].querySelector('.file-path-input');
 
     const data = {
-        secretsManagerId: smSelect.value,
-        secretsManagerName: smSelect.options[smSelect.selectedIndex]?.text || '',
+        authenticationId: authSelect.value,
+        authenticationName: authSelect.options[authSelect.selectedIndex]?.text || '',
         secretName: secretSelect.value,
         importType: typeSelect.value,
-        jsonKey: keySelect.value || null,
         targetKey: targetInput.value,
-        scope: scopeSelect.value
+        scope: 'SERVICE'
     };
 
-    if (typeSelect.value === 'json-file' && filePathInput) {
+    if (typeSelect.value === 'file' && filePathInput) {
         data.filePath = filePathInput.value;
     }
 
@@ -287,14 +234,13 @@ function collectRowData(rowId) {
 function validateRow(data) {
     const errors = [];
 
-    if (!data.secretsManagerId) errors.push('Secrets Manager is required');
+    if (!data.authenticationId) errors.push('Secrets Source is required');
     if (!data.secretName) errors.push('Secret Name is required');
     if (!data.importType) errors.push('Import Type is required');
-    if (data.importType === 'json-key' && !data.jsonKey) errors.push('JSON Key is required');
     if (!data.targetKey) errors.push('Target Key is required');
-    if (data.importType === 'json-file' && !data.filePath) errors.push('File path is required for JSON → File import type');
+    if (data.importType === 'file' && !data.filePath) errors.push('File path is required for File import type');
 
-    if (data.importType === 'json-file' && data.filePath && !data.filePath.startsWith('/')) {
+    if (data.importType === 'file' && data.filePath && !data.filePath.startsWith('/')) {
         errors.push('File path must start with /');
     }
 
@@ -600,11 +546,7 @@ function addBulkImportRow(smId, smName, secretName, jsonKey, targetKey) {
             <input type="text" class="file-path-input" placeholder="e.g., /etc/secrets/config.json" disabled>
         </td>
         <td>
-            <select>
-                <option value="PROJECT">PROJECT</option>
-                <option value="ENVIRONMENT">ENVIRONMENT</option>
-                <option value="SERVICE" selected>SERVICE</option>
-            </select>
+            <span class="scope-label">SERVICE</span>
         </td>
         <td>
             <button class="delete-btn" onclick="deleteRow('${rowId}')">Delete</button>
@@ -870,11 +812,7 @@ function addBulkStringImportRow(smId, smName, secretName, targetKey, importType,
             <input type="text" class="file-path-input" value="${filePath}" placeholder="e.g., /etc/secrets/config.json" ${isFile ? '' : 'disabled'}>
         </td>
         <td>
-            <select>
-                <option value="PROJECT">PROJECT</option>
-                <option value="ENVIRONMENT">ENVIRONMENT</option>
-                <option value="SERVICE" selected>SERVICE</option>
-            </select>
+            <span class="scope-label">SERVICE</span>
         </td>
         <td>
             <button class="delete-btn" onclick="deleteRow('${rowId}')">Delete</button>

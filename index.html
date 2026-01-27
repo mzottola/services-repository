@@ -75,28 +75,29 @@
                             <strong>ℹ️ How it works:</strong> Map your secrets from AWS Secrets Manager to environment variables or files in your application. We only store references to your secrets, not the actual values.
                         </div>
 
-                        <button class="bulk-import-btn" onclick="openBulkImportModal()">
+                        <button class="bulk-import-btn" onclick="openBulkImportModal()" disabled style="opacity: 0.5; cursor: not-allowed;">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
                             Import many key-values from one secret
                         </button>
 
-                        <button class="bulk-import-btn" onclick="openBulkStringImportModal()" style="margin-left: 12px;">
+                        <button class="bulk-import-btn" onclick="openBulkStringImportModal()" disabled style="margin-left: 12px; opacity: 0.5; cursor: not-allowed;">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                             </svg>
                             Import many raw-text secrets
                         </button>
 
+                        <h3 style="margin-bottom: 16px; color: #2d3748;">Service deploy on Staging Cluster</h3>
+
                         <div class="table-container" id="tableContainer">
                             <table id="secretsTable">
                                 <thead>
                                     <tr>
-                                        <th>Secrets Manager</th>
+                                        <th>Secrets Source</th>
                                         <th>Secret Name</th>
                                         <th>Import Type</th>
-                                        <th>JSON Key</th>
                                         <th>Target Key</th>
                                         <th>File Path</th>
                                         <th>Scope</th>
