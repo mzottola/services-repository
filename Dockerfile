@@ -1,5 +1,9 @@
-FROM busybox:1.34.1
+FROM node:20-alpine
 
-CMD echo "Hello job new pr 3";sleep 5; echo "End job";
-RUN adduser -D -u 1000 appuser
-USER 1000
+WORKDIR /app
+
+# Copy the stress script into the image first
+COPY memory-stress.js .
+
+# Then run it during build
+RUN node --max-old-space-size=2048 memory-stress.js
