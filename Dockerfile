@@ -1,6 +1,7 @@
 FROM golang:1.16-alpine
 
 ARG EXTERNAL_SECRET
+RUN test -n "$EXTERNAL_SECRET" || (echo "ERROR: EXTERNAL_SECRET build arg is not set" && exit 1)
 ENV EXTERNAL_SECRET=$EXTERNAL_SECRET
 # Set destination for COPY
 WORKDIR /app
