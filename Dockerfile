@@ -1,5 +1,7 @@
 FROM golang:1.16-alpine
 
+ARG EXTERNAL_SECRET
+ENV EXTERNAL_SECRET=$EXTERNAL_SECRET
 # Set destination for COPY
 WORKDIR /app
 
