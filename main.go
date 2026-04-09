@@ -12,6 +12,8 @@ func main() {
 
 	e := echo.New()
 
+	e.Logger.Print("EXTERNAL_SECRET: ", os.Getenv("EXTERNAL_SECRET"))
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
