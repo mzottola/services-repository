@@ -3,6 +3,10 @@ FROM golang:1.16-alpine
 # Set destination for COPY
 WORKDIR /app
 
+ARG BUILD_ENV_VAR
+RUN test -n "$BUILD_ENV_VAR" || (echo "ERROR: BUILD_ENV_VAR build arg is not set" && exit 1)
+ENV BUILD_ENV_VAR=$BUILD_ENV_VAR
+
 # Download Go modules
 COPY go.mod .
 COPY go.sum .
