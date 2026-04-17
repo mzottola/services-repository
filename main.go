@@ -9,11 +9,16 @@ import (
 )
 
 func main() {
-
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	// Fail if env var runtime not found
+	requiredEnvVar := os.Getenv("REQUIRED_ENV_VAR")
+	if requiredEnvVar == "" {
+		e.Logger.Fatal("Failing... env REQUIRED_ENV_VAR not found")
+	}
 
 	e.GET("/", func(c echo.Context) error {
 		e.Logger.Print("hello main page webhook trigger")
