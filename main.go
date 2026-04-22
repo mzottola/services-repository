@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net"
 	"net/http"
 	"os"
 
@@ -43,19 +44,23 @@ func main() {
 	}
 
 	go func() {
-          ee := echo.New()
-
-	  ee.Use(middleware.Logger())
-	  ee.Use(middleware.Recover())
-
-	  ee.GET("/health", func(c echo.Context) error {
-		ee.Logger.Print("health hook")
-		return c.HTML(http.StatusOK, "health OK")
-	  })
-
-          ee.Logger.Print("Server started on: http://localhost:3000")
-	  ee.Logger.Fatal(ee.Start(":3000"))
-        }()
+		ln, err := net.Listen("tcp", ":3000")
+		if err != nil {
+			e.Logger.Fatal(err)
+		}
+		e.Logger.Print("TCP server started on: tcp://localhost:3000")
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				e.Logger.Error(err)
+				continue
+			}
+			go func(c net.Conn) {
+				defer c.Close()
+				c.Write([]byte("hello from TCP server\n"))
+			}(conn)
+		}
+	}()
 
 	e.Logger.Fatal(e.Start(":" + httpPort))
 }
