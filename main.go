@@ -44,6 +44,18 @@ func main() {
 	}
 
 	go func() {
+		e2 := echo.New()
+		e2.Use(middleware.Logger())
+		e2.Use(middleware.Recover())
+
+		e2.GET("/", func(c echo.Context) error {
+			return c.HTML(http.StatusOK, "Hello from port 8081")
+		})
+
+		e2.Logger.Fatal(e2.Start(":8081"))
+	}()
+
+	go func() {
 		ln, err := net.Listen("tcp", ":3000")
 		if err != nil {
 			e.Logger.Fatal(err)
@@ -64,3 +76,4 @@ func main() {
 
 	e.Logger.Fatal(e.Start(":" + httpPort))
 }
+
