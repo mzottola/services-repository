@@ -25,6 +25,7 @@ RUN apk add curl
 # must be supplied to the docker command.
 EXPOSE 8080
 
+
 EXPOSE 8081
 EXPOSE 3000
 
