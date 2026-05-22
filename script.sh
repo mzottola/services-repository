@@ -2,6 +2,6 @@
 
 echo 'Cronjob job in progress'
 
-sleep 2
+sleep 60
 echo 'done'
 
