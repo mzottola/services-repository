@@ -1,1 +1,1 @@
-foo = "bar"
+region=eu-west-2
