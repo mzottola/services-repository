@@ -1,61 +1,65 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"database/sql"
+	"fmt"
+	"log"
 	"os"
+	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/lib/pq"
 )
 
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
 func main() {
+	host := getEnv("PGHOST", "")
+	port := getEnv("PGPORT", "5432")
+	user := getEnv("PGUSER", "")
+	password := getEnv("PGPASSWORD", "")
+	dbname := getEnv("PGDATABASE", "postgres")
+	sslmode := getEnv("PGSSLMODE", "require")
 
-	e := echo.New()
-
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET("/", func(c echo.Context) error {
-		e.Logger.Print("hello main page webhook trigger")
-		for key, values := range c.Request().Header {
-                    e.Logger.Print("Header: ", key)
-                    for _, value := range values {
-                        e.Logger.Print("  Value: ", value)
-                    }
-                }
-
-		return c.HTML(http.StatusOK, "Hello, go-simple-app ")
-	})
-
-	e.GET("/ping", func(c echo.Context) error {
-		e.Logger.Print("hello ping")
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	e.POST("/webhook-mzo-3", func(c echo.Context) error {
-		e.Logger.Print("hello webhookmzo3")
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
-
-	httpPort := os.Getenv("HTTP_PORT")
-	if httpPort == "" {
-		httpPort = "8080"
+	if host == "" || user == "" || password == "" {
+		log.Fatal("PGHOST, PGUSER, and PGPASSWORD must be set")
 	}
 
-	go func() {
-          ee := echo.New()
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		host, port, user, password, dbname, sslmode,
+	)
 
-	  ee.Use(middleware.Logger())
-	  ee.Use(middleware.Recover())
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatalf("failed to open connection: %v", err)
+	}
+	defer db.Close()
 
-	  ee.GET("/health", func(c echo.Context) error {
-		ee.Logger.Print("health hook")
-		return c.HTML(http.StatusOK, "health OK")
-	  })
+	// Keep the process alive, checking the connection periodically
+	for {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		err := db.PingContext(ctx)
+		cancel()
 
-          ee.Logger.Print("Server started on: http://localhost:3000")
-	  ee.Logger.Fatal(ee.Start(":3000"))
-        }()
+		if err != nil {
+			log.Printf("ping failed: %v", err)
+		} else {
+			var version string
+			ctx2, cancel2 := context.WithTimeout(context.Background(), 10*time.Second)
+			if err := db.QueryRowContext(ctx2, "SELECT version();").Scan(&version); err != nil {
+				log.Printf("query failed: %v", err)
+			} else {
+				log.Printf("connected OK — %s", version)
+			}
+			cancel2()
+		}
 
-	e.Logger.Fatal(e.Start(":" + httpPort))
+		time.Sleep(30 * time.Second)
+	}
 }

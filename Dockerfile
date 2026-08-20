@@ -1,36 +1,13 @@
-FROM golang:1.16-alpine
+FROM golang:1.22-alpine AS builder
 
-# Set destination for COPY
 WORKDIR /app
-
-# Download Go modules
-COPY go.mod .
-COPY go.sum .
+COPY go.mod go.sum ./
 RUN go mod download
+COPY main.go ./
+RUN CGO_ENABLED=0 GOOS=linux go build -o pg-client .
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/engine/reference/builder/#copy
-COPY *.go ./
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates
+COPY --from=builder /app/pg-client /pg-client
 
-# Build
-RUN go build -o /docker-gs-ping
-
-RUN apk update
-RUN apk upgrade
-
-RUN apk add curl
-
-# This is for documentation purposes only.
-# To actually open the port, runtime parameters
-# must be supplied to the docker command.
-EXPOSE 8080
-EXPOSE 3000
-
-# (Optional) environment variable that our dockerised
-# application can make use of. The value of environment
-# variables can also be set via parameters supplied
-# to the docker command on the command line.
-#ENV HTTP_PORT=8081
-
-# Run
-CMD [ "/docker-gs-ping" ]
+ENTRYPOINT ["/pg-client"]
